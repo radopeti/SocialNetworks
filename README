@@ -6,7 +6,7 @@ My tasks are:
 	- implement CapGraph class (done)
 	- add JUNG library (done)
 	- create a GUI with Swing (done)
-	- visualize getSCCs (in progres) and getEgoNet (done) methods
+	- visualize getSCCs (in progress) and getEgoNet (done) methods
 	- implement Girvan-Newman algorithm to detect communities (in progress)
 	
 How to use:
