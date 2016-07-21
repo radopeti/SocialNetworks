@@ -1,3 +1,18 @@
+I left the original README content below.
+
+Plans and progress of my project:
+
+My tasks are:
+	- implement CapGraph class (done)
+	- add JUNG library (done)
+	- create a GUI with Swing (done)
+	- visualize getSCCs (in progres) and getEgoNet (done) methods
+	- implement Girvan-Newman method to detect communities (in progress)
+	
+How to use:
+	Select a node on the graph and choose a method, then click on "show" button
+	to show the result. Before you want to call a method again, use the "Clear" button.
+
 /-------------------------------------------------------------------------
 / Starter Code for Capstone Project in the
 / Java Programming: Object Oriented Design of 

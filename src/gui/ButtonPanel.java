@@ -68,11 +68,13 @@ public class ButtonPanel extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				String selected = list.getSelectedValue();
-				if (btnPanelListener != null){
+				if (btnPanelListener != null && selected != null){
 					if (selected.equals("EgoNet")){
+						System.out.println("showing egonet");
 						btnPanelListener.showEgoNet();
-					}else if (selected.equals("SCCs")){
-						btnPanelListener.showEgoNet();
+					}else if (selected.equals("SCC")){
+						System.out.println("showing scc-s");
+						btnPanelListener.showSCCs();
 					}
 				}
 				

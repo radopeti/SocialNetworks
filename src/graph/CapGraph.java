@@ -15,7 +15,7 @@ import java.util.Stack;
 import util.GraphLoader;
 
 /**
- * @author Your name here.
+ * @author Peter Rado
  * 
  * For the warm up assignment, you must implement your Graph in a class
  * named CapGraph.  Here is the stub file.
@@ -56,6 +56,8 @@ public class CapGraph implements Graph {
 
 	/* (non-Javadoc)
 	 * @see graph.Graph#getEgonet(int)
+	 * Egonet returns a graph which represent (in a social network)
+	 * all friend of the center, and the connection between them.
 	 */
 	@Override
 	public Graph getEgonet(int center) {
@@ -79,6 +81,10 @@ public class CapGraph implements Graph {
 
 	/* (non-Javadoc)
 	 * @see graph.Graph#getSCCs()
+	 * Works best on directed graph
+	 * It returns a list of strongly connected subgraphs,
+	 * where is a path between all pairs of u & v nodes
+	 * with both direction.
 	 */
 	@Override
 	public List<Graph> getSCCs() {
@@ -95,6 +101,12 @@ public class CapGraph implements Graph {
 		return SCCs;
 	}
 	
+	/**
+	 * 
+	 * @param adjList
+	 * @param vertices
+	 * @return
+	 */
 	private List<Integer> dfs(HashMap<Integer, HashSet<Integer>> adjList, List<Integer> vertices){
 		List<Integer> finished = new LinkedList<Integer>();
 		Set<Integer> visited = new HashSet<Integer>();

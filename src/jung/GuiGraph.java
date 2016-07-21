@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import edu.uci.ics.jung.algorithms.cluster.EdgeBetweennessClusterer;
 import edu.uci.ics.jung.graph.SparseMultigraph;
 import graph.CapGraph;
 import util.GraphLoader;
@@ -19,8 +20,8 @@ public class GuiGraph extends SparseMultigraph<Node<Integer>, Edge<Integer>>{
 	
 	public GuiGraph(){
 		capGraph = new CapGraph();
-		GraphLoader.loadGraph(capGraph, "data/smallest_data.txt");
-		GraphLoader.loadGraph(this, "data/smallest_data.txt");
+		GraphLoader.loadGraph(capGraph, "data/facebook_1000.txt");
+		GraphLoader.loadGraph(this, "data/facebook_1000.txt");
 	}
 
 	public Node<Integer> getSelected() {
@@ -68,15 +69,35 @@ public class GuiGraph extends SparseMultigraph<Node<Integer>, Edge<Integer>>{
 		}
 	}
 	
+	public void findCommunnities(){
+		ArrayList<Node<Integer>> markedVertices = new ArrayList<>();
+		ArrayList<Edge<Integer>> markedEdges = new ArrayList<>();
+		
+		EdgeBetweennessClusterer<Node<Integer>, Edge<Integer>> betweenness = new EdgeBetweennessClusterer<>(10);
+		System.out.println(betweenness.transform(this) + " " + betweenness.getEdgesRemoved());
+		for (Edge<Integer> edge : betweenness.getEdgesRemoved()){
+			edge.setMarked(true);
+			markedEdges.add(edge);
+		}
+		
+		edges = new ArrayList<>(this.getEdges());
+	    edges.retainAll(markedEdges);
+	}
+	
 	public void unmarkGraph(){
-	   for (Node<Integer> node : vertices){
-		   System.out.println("unmarking " + node);
-		   node.setMarked(false);
+		if (vertices != null){
+			for (Node<Integer> node : vertices){
+				   System.out.println("unmarking " + node);
+				   node.setMarked(false);
+			   }
+		}
+	   
+	    if (edges != null){
+		    for (Edge<Integer> edge : edges){
+			   System.out.println("unmarking " + edge);
+			   edge.setMarked(false);
+		   }
 	   }
 	   
-	   for (Edge<Integer> edge : edges){
-		   System.out.println("unmarking " + edge);
-		   edge.setMarked(false);
-	   }
 	}
 }

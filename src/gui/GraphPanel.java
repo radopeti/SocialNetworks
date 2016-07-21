@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 
 import org.apache.commons.collections15.Transformer;
 
+import edu.uci.ics.jung.algorithms.cluster.EdgeBetweennessClusterer;
 import edu.uci.ics.jung.algorithms.layout.ISOMLayout;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
@@ -47,6 +48,8 @@ public class GraphPanel extends JPanel implements ButtonPanelListener{
 				return font;
 			}
 		});
+		
+		
 		
 		Transformer<Node<Integer>, Paint> vertexColor = new Transformer<Node<Integer>, Paint>() {
 
@@ -103,6 +106,7 @@ public class GraphPanel extends JPanel implements ButtonPanelListener{
 			}
 		});
 		
+		
 		DefaultModalGraphMouse<Object, Object> gm = new DefaultModalGraphMouse<Object, Object>();
 		gm.setMode(ModalGraphMouse.Mode.TRANSFORMING);
 		vv.setGraphMouse(gm);
@@ -119,7 +123,8 @@ public class GraphPanel extends JPanel implements ButtonPanelListener{
 	@Override
 	public void showSCCs() {
 		// TODO Auto-generated method stub
-		
+		guiGraph.findCommunnities();
+		vv.repaint();
 	}
 
 	@Override
