@@ -1,13 +1,22 @@
 package graph;
 
+/**
+ * Represent an edge in a graph by two nodes
+ * @author Peter Rado
+ *
+ */
+
 public class Edge {
 	private Node start;
 	private Node end;
+	//the betweenness is being calculated later
+	//only used by the Girvan-Newman algorithm
 	private double betweenness;
 	
 	public Edge(Node start, Node end){
 		this.start = start;
 		this.end = end;
+		betweenness = 0;
 	}
 
 	public Node getStart() {

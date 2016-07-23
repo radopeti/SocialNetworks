@@ -5,13 +5,30 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Represent a simple vertex in a graph.
+ * @author Peter Rado
+ * 
+ */
+
 public class Node {
+	//the value of the vertex
 	private int value;
+	//store the actucal distance, only used by some algorithms
+	//like Dijkstra
+	//default value is 0
 	private int distance;
+	//helper properties to distribute the flow when calculating the betweenness
+	//of an edge
 	private double inFlow;
 	private double outFlow;
+	//the edges of this node
 	private List<Edge> edges;
 	
+	/**
+	 * Constructor
+	 * @param value the value of the vertex
+	 */
 	public Node(int value){
 		this.value = value;
 		edges = new ArrayList<Edge>();
