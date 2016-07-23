@@ -17,7 +17,7 @@ public class Node {
 	//store the actucal distance, only used by some algorithms
 	//like Dijkstra
 	//default value is 0
-	private int distance;
+	private double distance;
 	//helper properties to distribute the flow when calculating the betweenness
 	//of an edge
 	private double inFlow;
@@ -42,11 +42,11 @@ public class Node {
 		this.value = value;
 	}
 
-	public int getDistance() {
+	public double getDistance() {
 		return distance;
 	}
 
-	public void setDistance(int distance) {
+	public void setDistance(double distance) {
 		this.distance = distance;
 	}
 
@@ -70,9 +70,7 @@ public class Node {
 		return edges;
 	}
 
-	public void addEdge(int end) {
-		Node neighbor = new Node(end);
-		Edge edge = new Edge(this, neighbor);
+	public void addEdge(Edge edge) {
 		edges.add(edge);
 	}
 

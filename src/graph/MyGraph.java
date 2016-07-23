@@ -1,23 +1,40 @@
 package graph;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
+import java.util.PriorityQueue;
 
 import util.GraphLoader;
 
+/**
+ * MyGraph implements the Graph interface
+ * The class is designed to implement the Girvan-Newman algorihm, to
+ * find communities in a social network.
+ * It use an adjacency list, to represent the graph with <Integer, Node> pairs.
+ * @author Peter Rado
+ *
+ */
+
 public class MyGraph implements Graph {
 	
+	//adjacency list
 	private Map<Integer, Node> adjList;
 	
+	/**
+	 * Constructor
+	 */
 	public MyGraph(){
 		adjList = new HashMap<>();
 	}
 	
+	/**
+	 * Add a vertex to the graph
+	 */
 	@Override
 	public void addVertex(int num) {
 		// TODO Auto-generated method stub
@@ -27,20 +44,35 @@ public class MyGraph implements Graph {
 		}
 	}
 
+	/**
+	 * add an edge to the graph
+	 */
 	@Override
 	public void addEdge(int from, int to) {
 		// TODO Auto-generated method stub
-		if (adjList.containsKey(from)){
-			adjList.get(from).addEdge(to);
+		if (adjList.containsKey(from) && adjList.containsKey(to)){
+			Node start = adjList.get(from);
+			Node end = adjList.get(to);
+			Edge edge = new Edge(start, end);
+			adjList.get(from).addEdge(edge);
 		}
 	}
 
+	/**
+	 * Return a Graph which represent a person's egonet:
+	 * the person's connections and the relationship between them
+	 */
 	@Override
 	public Graph getEgonet(int center) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/**
+	 * Return a list a Strongly Connected Components:
+	 * subgraphs, where every u, v vertex has a path with
+	 * both directions.
+	 */
 	@Override
 	public List<Graph> getSCCs() {
 		// TODO Auto-generated method stub
@@ -104,16 +136,59 @@ public class MyGraph implements Graph {
 		
 	}
 	
-	private List<Integer> buildPath(HashMap<Node, Node> parentMap, Node end, Node start){
-		LinkedList<Integer> path = new LinkedList<>();
-		System.out.println(end);
-		Node curr = end;
-		while (!curr.equals(start)){
-			path.addFirst(curr.getValue());
-			curr = parentMap.get(curr);
+	public List<Integer> dijkstra(int start, int end){
+		
+		Comparator<Node> comparator = new Comparator<Node>() {
+
+			@Override
+			public int compare(Node node1, Node node2) {
+				if (node1.getDistance() < node2.getDistance()) return 1;
+				else if (node1.getDistance() > node2.getDistance()) return -1;
+				else return 0;
+			}
+		};
+		
+		HashSet<Node> visited = new HashSet<>();
+		PriorityQueue<Node> queue = new PriorityQueue<>(comparator);
+		HashMap<Node, Node> parentMap = new HashMap<>();
+		initDistances();
+		Node startNode = adjList.get(start);
+		Node endNode = adjList.get(end);
+		startNode.setDistance(0);
+		System.out.println(startNode);
+		queue.add(startNode);
+		boolean found = false;
+		
+		
+		while(!queue.isEmpty()){
+			Node curr = queue.remove();
+			System.out.println("currs dist: " + curr.getDistance());
+			if (curr.equals(endNode)) {
+				found = true;
+				break;
+			}
+			
+			if (!visited.contains(curr)){
+				visited.add(curr);
+				List<Edge> edges = adjList.get(curr.getValue()).getEdges();
+				for (Edge edge : edges){
+					Node n = edge.getEnd();
+					double distance = curr.getDistance() + 1;
+					System.out.println(distance);
+					if (distance <= n.getDistance()){
+						n.setDistance(distance);
+						queue.add(n);
+						parentMap.put(n, curr);
+					}
+				}
+			}
+		}	
+		
+		if (found){
+			return buildPath(parentMap, endNode, startNode);
+		}else{
+			return new LinkedList<Integer>();
 		}
-		path.addFirst(curr.getValue());
-		return path;
 	}
 	
 	@Override
@@ -128,7 +203,32 @@ public class MyGraph implements Graph {
 		}
 		return graphByText;
 	}
-
+	
+	/**
+	 * Helper method to reconstruct a path from the end to start. 
+	 * @param parentMap The parent map which build by a search algorithm
+	 * @param end end node
+	 * @param start start node
+	 * @return The path found by a search algorithm.
+	 */
+	private List<Integer> buildPath(HashMap<Node, Node> parentMap, Node end, Node start){
+		LinkedList<Integer> path = new LinkedList<>();
+		System.out.println(end);
+		Node curr = end;
+		while (!curr.equals(start)){
+			path.addFirst(curr.getValue());
+			curr = parentMap.get(curr);
+		}
+		path.addFirst(curr.getValue());
+		return path;
+	}
+	
+	private void initDistances(){
+		for (int vertex : adjList.keySet()){
+			adjList.get(vertex).setDistance(Double.POSITIVE_INFINITY);
+		}
+	}
+	
 	public static void main(String... strings){
 		MyGraph g = new MyGraph();
 		GraphLoader.loadGraph(g, "data/smallest_data.txt");
@@ -137,6 +237,8 @@ public class MyGraph implements Graph {
 		for (int num : g.bfs(18, 50)){
 			System.out.println(num);
 		}
+		
+		g.dijkstra(18, 50);
 	}
 	
 }
