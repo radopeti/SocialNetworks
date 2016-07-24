@@ -1,5 +1,6 @@
 package graph;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -81,8 +82,70 @@ public class MyGraph implements Graph {
 	
 	
 	//TODO: implement this one, no matter what
-	public Map<Integer, Integer> findAllShortestPath(){
-		return null;
+	public Map<Integer, List<Integer>> findAllShortestPath(int start, int end){
+		Comparator<Node> comparator = new Comparator<Node>() {
+
+			@Override
+			public int compare(Node node1, Node node2) {
+				if (node1.getDistance() > node2.getDistance()) return 1;
+				else if (node1.getDistance() < node2.getDistance()) return -1;
+				else return 0;
+			}
+		};
+		
+		HashSet<Node> visited = new HashSet<>();
+		PriorityQueue<Node> queue = new PriorityQueue<>(comparator);
+		HashMap<Integer, List<Integer>> paths = new HashMap<>();
+		initDistances();
+		Node startNode = adjList.get(start);
+		Node endNode = adjList.get(end);
+		startNode.setDistance(0);
+		System.out.println(startNode);
+		queue.add(startNode);
+		boolean found = false;
+		
+		
+		while(!queue.isEmpty()){
+			Node curr = queue.remove();
+			System.out.println("dequeue: " + curr);
+			if (!visited.contains(curr)){
+				visited.add(curr);
+				List<Edge> edges = adjList.get(curr.getValue()).getEdges();
+				for (Edge edge : edges){
+					Node n = edge.getEnd();
+					double distance = curr.getDistance() + 1;
+					if (distance <= n.getDistance()){
+						n.setDistance(distance);
+						queue.add(n);
+						System.out.println("set dist: " + n);
+						if (!paths.containsKey(curr.getValue())){
+							//System.out.println("create a new list and add: " + n.getValue());
+							List<Integer> list = new ArrayList<>();
+							list.add(n.getValue());
+							paths.put(curr.getValue(), list);
+						}else{
+							paths.get(curr.getValue()).add(n.getValue());
+							//System.out.println("put val: " + n.getValue());
+						}
+					}
+				}
+			}
+		}
+		
+		for (Map.Entry<Integer, List<Integer>> entry : paths.entrySet()){
+			String output = "";
+			output += entry.getKey() + "->";
+			for (int n : entry.getValue()){
+				output += n + ", ";
+			}
+			System.out.println(output);
+		}
+		
+		if (found){
+			return paths;
+		}else{
+			return new HashMap<Integer, List<Integer>>();
+		}
 	}
 	
 	@Override
@@ -231,14 +294,9 @@ public class MyGraph implements Graph {
 	
 	public static void main(String... strings){
 		MyGraph g = new MyGraph();
-		GraphLoader.loadGraph(g, "data/smallest_data.txt");
+		GraphLoader.loadGraph(g, "data/find_all_shortest_2.txt");
 		System.out.println(g.toString());;
-		
-		for (int num : g.bfs(18, 50)){
-			System.out.println(num);
-		}
-		
-		g.dijkstra(18, 50);
+		g.findAllShortestPath(4, 1);
 	}
 	
 }
